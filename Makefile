@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := gpio
+PROJECT_NAME := knocker
 
 include $(IDF_PATH)/make/project.mk
 
