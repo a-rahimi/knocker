@@ -35,7 +35,7 @@ static void IRAM_ATTR gpio_isr_handler(void* arg)
 }
 
 
-static void gpio_task_example(void* arg)
+static void unlocker_task(void* arg)
 {
     const int NUM_CODES = 10;
     char code[NUM_CODES + 1];
@@ -123,7 +123,7 @@ void app_main(void)
     gpio_evt_queue = xQueueCreate(10, sizeof(Event));
 
     //start gpio task
-    xTaskCreate(gpio_task_example, "gpio_task_example", 2048, NULL, 10, NULL);
+    xTaskCreate(unlocker_task, "unlocker_task", 2048, NULL, 10, NULL);
 
     //install gpio isr service
     gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
