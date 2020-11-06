@@ -66,24 +66,22 @@ static void unlocker_task(void* arg)
             } else {
                 printf("Timeout\n");
 
-                if(num_timeouts++ > 3 || code_index >= NUM_CODES) {
-                    // This is the end of the code sequence.
-
-                    if(strcmp(code, "2230")) {
-                        printf("Codes don't match\n");
-                    } else {
-                        printf("Unlocking\n");
-                        unlock();
-                        printf("Done unlock\n");
-                    }
-     
-                    break; // Go back to outer loop that waits for the beginning of the code.
+                if(num_timeouts++ > 3) {
+                    // This is the end of the code sequence. Reset and wait for a new sequence.
+                    break;
+                }
+                
+                if(!strcmp(code, "2230")) {
+                  printf("Unlocking\n");
+                  unlock();
+                  printf("Done unlock\n");
+                  break;
                 }
 
                 // After a timeout, start accumulating the count for the next code. But
                 // only do so if this code has a non-zero count. This way, we never get
                 // 0 counts in the code string.
-                if(code[code_index] != '0') {
+                if(code[code_index] != '0' && code_index < NUM_CODES) {
                     code_index++;
                     code[code_index] = '0';
                 }
@@ -133,7 +131,7 @@ void app_main(void)
     printf("Minimum free heap size: %d bytes\n", esp_get_minimum_free_heap_size());
 
     while(1) {
-        printf("Heartbeat");
+        printf("Heartbeat\n");
         vTaskDelay(10000 / portTICK_RATE_MS);
     }
     //vTaskSuspend(NULL);
